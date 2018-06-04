@@ -1,0 +1,87 @@
+#!/bin/bash
+#--------------------------------------#                                       
+#Autor: Daniel Gomes Venzi Gonçalves   |
+#email: gomesvenzi@gmail.com           |
+#--------------------------------------#
+
+ERR0="
+	Wrong usage of command, please use -h or --help option for more information.
+"
+
+HELP="
+	Description:	dvanalysis - Provides a way to check on the status of services and system resources in a more user friendly way.
+
+	Config:		dvanalysis works based on a configuration file: dvanalysis.conf, in wich you define the services and system resources that the script must have a look on.
+			The definition of services and resources in the configuration file is really simple, only two variables for you to populate:
+				
+				services - The name of the services you want to analyse. Service names must be separated by commas. OBS: Check if the name you are inserting is the 
+					   actual service name.
+					
+					Example: 
+						services=apache2,sshd,mysql-server
+
+				resources - The system resources you want to analyse. Resources must be separated by commas.
+					
+					Example:
+						resources=ram,disk_usage
+
+	Usage: 		dvanalysis [OPTION] {ARGUMENT}	
+
+			OPTIONS: -s , make a analysis for a specific service, ignores the config file. OBS: {Argument} for this case will be the service name.
+				 -r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.
+				 -lr , list the supported resources for analysis.
+
+	Author: Daniel Gomes - daniel@avantsec.com.br
+
+	Property: AvantSec
+"
+
+RESOURCES="
+	NAME	-	RESOURCE NAME (the one you should put in the config file)
+
+	Volatile memory 	-	RAM
+	'Permanent' memory	-	DISK_USAGE 
+"
+
+if [ -z $1 ] ; then
+
+	echo "$ERR0"
+
+elif [ $1 == "-h" ] || [ $1 == "--help" ] ; then
+
+	echo "$HELP"
+	
+elif [ $1 != "-s" ] && [ $1 != "-r" ] && [ $1 != "-lr" ] ; then
+
+	echo "$ERR0"
+else
+
+	if [ $1 == "-s" ] ; then
+		
+		if [ -z $2 ] ; then
+			echo "$ERR0"
+		
+		else 
+			SERVICE_PID=$(systemctl status $2 | grep "Main PID:")
+			echo "$SERVICE_PID"
+		fi
+
+	elif [ $1 == "-r" ] ; then
+		
+		if [ -z $2 ] ; then
+			echo "$ERR0"
+
+		else 
+			echo "123"
+		fi
+
+	elif [ $1 == "-lr" ] ; then
+		
+		echo "$RESOURCES"
+		#echo "Chegou aqui"
+	fi
+	#echo "$SERVICES" ; echo "$RESOURCES"
+
+fi
+
+

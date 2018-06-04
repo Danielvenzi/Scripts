@@ -1,0 +1,8 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+	cout << "Eu ainda lembro a estrutura básica dessa merdaa" << end;l
+}

@@ -1,0 +1,114 @@
+#!/bin/bash
+
+HELP="
+	DESCRIPTION:	avant-hardening provides a quick way to harden your operating system against known vulnerabilities.
+
+	OPTIONS:	No options, performs hardening by removing programs with known vulnerabilities, blocking users that do not need shell access, changing permissions in key files and stopping services with known vulnerabilites.
+			-h or --help, displays the help text.
+			-u, updates  the system.
+			-b, block terminal after a certain time.
+				Example: (1) avant-hardening -b 300, in this example the terminal will be closed after 300 seconds.
+						OBS: The timeout will only be enforced when another session is opened.
+					 (2) avant-hardening -b 60 -f, the -f option makes the timeout value readonly, with this option set case (2) won't work. 
+			-a, audits the system and provides a list of suggestions for the enhancement of the security in your system.
+				OBS: This option requires lynis installed. (yum -y install lynis)
+
+	AUTHOR: Daniel Gomes - daniel@avantsec.com.br
+	
+	PROPERTY: AvantSec
+"	
+
+ERR="Wrong Usage of command, use -h or --help option for help."
+
+if [ $1 == "-h" ] || [ $1 == "--help" ] ; then
+
+	echo "$HELP"
+
+elif [ $1 == "-u" ] ; then
+
+	#Update the operating system.
+		yum update
+		yum upgrade
+
+elif [ $1 == "-b" ] ; then
+	
+	if [ -z $2 ] ; then
+		
+		echo "$ERR"
+	
+	elif [ $2 = 0 ] ; then
+		
+		unset TMOUT		
+	
+	elif [ $2 -eq $2 ] ; then
+		
+		if [ $3 == "-f" ] ; then
+			echo "TMOUT=$2" >> $HOME/.bash_profile
+			echo "readonly TMOUT" >> $HOME/.bash_profile
+			echo "export TMOUT" >> $HOME/.bash_profile
+
+		elif [ -z $3 ] ; then
+			#Blocks terminal after a given time 
+			echo "TMOUT=$2" >> $HOME/.bash_profile
+			echo "export TMOUT" >> $HOME/.bash_profile
+		fi
+	fi		
+
+elif [ $1 == "-a" ] ; then
+	
+	lynis audit system
+
+
+else
+	#Uninstalling programs with known vulnerabilities.
+		yum remove lynx
+		yum remove wget 
+		yum remove netcat
+		yum remove nc
+		yum remove hping
+
+	#Block user that don't need shell
+		usermod -L daemon
+		usermod -L bin
+		usermod -L sys
+		usermod -L games
+		usermod -L man
+		usermod -L lp
+		usermod -L mail
+		usermod -L news		
+		usermod -L uucp
+		usermod -L proxy
+		usermod -L www-data
+		usermod -L backup
+		usermod -L list
+		usermod -L irc
+		usermod -L gnats
+		usermod -L nobody
+		usermod -L libuuid
+
+	#Changing permissions for keys files
+		chmod -Rf 744 /var/log
+		chmod 644 /boot/grub/grub.conf
+		chmod 755 /etc/alternatives
+		chmod 700 /bin/ping
+		chmod 700 /bin/ping6
+		chmod 700 /bin/nano
+		chmod 700 /bin/gcc
+		chmod 700 /bin/vim
+		chmod 700 /bin/yum
+		chmod 700 /usr/bin/who
+		chmod 700 /usr/bin/vim
+		chmod 700 /usr/bin/locate
+		chmod 700 /sbin/ifconfig
+		chmod 700 /usr/bin/make
+		chmod 700 /usr/bin/scp
+
+	#Stopping services
+		systemctl stop vsftpd
+		systemctl disable vsftpd
+		systemctl stop rshd
+		systemctl disable rshd
+		systemctl stop rlogind
+		systemctl disable rlogind
+		
+fi

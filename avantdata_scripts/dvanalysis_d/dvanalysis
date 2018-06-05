@@ -1,47 +1,69 @@
 #!/bin/bash
 #--------------------------------------#                                       
 #Autor: Daniel Gomes Venzi Gonçalves   |
-#email: gomesvenzi@gmail.com           |
+#email: daniel@avantsec.com           |
 #--------------------------------------#
 
 ERR0="
-	Wrong usage of command, please use -h or --help option for more information.
+     #--------------------------------------------------------------------------------#
+     |	ERROR:                                                                        |
+     #--------------------------------------------------------------------------------#
+     |                                                                                |     
+     |	Wrong usage of command, please use -h or --help option for more information.  |
+     |                                                                                |
+     #--------------------------------------------------------------------------------#
 "
 
 HELP="
-	Description:	dvanalysis - Provides a way to check on the status of services and system resources in a more user friendly way.
-
-	Config:		dvanalysis works based on a configuration file: dvanalysis.conf, in wich you define the services and system resources that the script must have a look on.
-			The definition of services and resources in the configuration file is really simple, only two variables for you to populate:
-				
-				services - The name of the services you want to analyse. Service names must be separated by commas. OBS: Check if the name you are inserting is the 
-					   actual service name.
-					
-					Example: 
-						services=apache2,sshd,mysql-server
-
-				resources - The system resources you want to analyse. Resources must be separated by commas.
-					
-					Example:
-						resources=ram,disk_usage
-
-	Usage: 		dvanalysis [OPTION] {ARGUMENT}	
-
-			OPTIONS: -s , make a analysis for a specific service, ignores the config file. OBS: {Argument} for this case will be the service name.
-				 -r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.
-				 -lr , list the supported resources for analysis.
-
-	Author: Daniel Gomes - daniel@avantsec.com.br
-
-	Property: AvantSec
+     #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+     |            																					 |
+     |			HELP MENU																			 |
+     |	 																						 |
+     #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+     |                                                                                                                                                                                   |
+     |	DESCRIPTION:	dvanalysis - Provides a way to check on the status of services and system resources in a more user friendly way.                                                 |
+     |                                                                                                                                                                                   |
+     |	CONFIG:		dvanalysis works based on a configuration file: dvanalysis.conf, in wich you define the services and system resources that the script must have a look on.       |
+     |			The definition of services and resources in the configuration file is really simple, only two variables for you to populate:                                     |
+     |				                                                                                                                                                         |
+     |				services - The name of the services you want to analyse. Service names must be separated by commas. OBS: Check if the name you are inserting is the      |
+     |					   actual service name.                                                                                                                          |
+     |				                                                                                                                                                         |
+     |				     Example:                                                                                                                                            |
+     |						services=apache2,sshd,mysql-server                                                                                                       |
+     |                                                                                                                                                                                   |
+     |				resources - The system resources you want to analyse. Resources must be separated by commas.                                                             |
+     |					                                                                                                                                                 |
+     | 					Example:                                                                                                                                         | 
+     |						resources=RAM,DISK_USAGE                                                                                                                 |
+     |                                                                                                                                                                                   |
+     |	USAGE: 		dvanalysis [OPTION] {ARGUMENT}	                                                                                                                                 |
+     |                                                                                                                                                                                   |
+     |	OPTIONS: 	-s , make a analysis for a specific service, ignores the config file. OBS: {Argument} for this case will be the service name.                                    |
+     |		 	-r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.                                 |
+     |		 	-lr , list the supported resources for analysis.                                                                                                                 |
+     |                                                                                                                                                                                   |
+     #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+     |                                                                                                                                                                                   |
+     |	AUTHOR: 	Daniel Gomes - daniel@avantsec.com.br                                                                                                                            |
+     |                                                                                                                                                                                   |
+     |	PROPERTY: 	AvantSec                                                                                                                                                         |
+     |                                                                                                                                                                                   |
+     #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 "
 
 RESOURCES="
-	NAME	-	RESOURCE NAME (the one you should put in the config file)
+     #----------------------------------------------------------------------------------#
+     |       NAME       -  RESOURCE NAME (the one you should put in the config file)    |
+     #----------------------------------------------------------------------------------#
+     |                                                                                  |
+     |	     Volatile memory 	-	RAM                                             |
+     |	     'Permanent' memory	-	DISK_USAGE                                      |
+     |	                                                                                | 
+     #----------------------------------------------------------------------------------#
+" 
 
-	Volatile memory 	-	RAM
-	'Permanent' memory	-	DISK_USAGE 
-"
+
 
 if [ -z $1 ] ; then
 
@@ -62,8 +84,23 @@ else
 			echo "$ERR0"
 		
 		else 
-			SERVICE_PID=$(systemctl status $2 | grep "Main PID:")
-			echo "$SERVICE_PID"
+			systemctl status $2 | grep "(running)" &> /dev/null
+
+			if [ $? -ne 0 ] ; then
+				clear ; echo "The service you're analyzing is not active or doesn't exist."
+			else
+				STAT="Service $2 is active (running)"
+				PID=$(systemctl status $2 | grep "Main PID" | grep -Po '[0-9]{3,}')
+				N=$(netstat -tulpn | grep "$PID/$2" | wc -l)
+				
+				if [ $N -lt 2 ] ; then
+					PORT=$(netstat -tulpn | grep "$PID/$2" | grep -Po ':::\K\d+')
+					echo "$PORT"
+				else
+					netstat -tulpn | grep "$PID/$2" > port.info
+				fi
+			fi	
+			
 		fi
 
 	elif [ $1 == "-r" ] ; then

@@ -21,41 +21,26 @@ ERR0="
 "
 
 HELP="
-     #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-     |            																					 |
-     |			${purple}HELP MENU${reset}																			 |
-     |	 																						 |
-     #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-     |                                                                                                                                                                                   |
-     |	${yellow}DESCRIPTION:${reset}	avant-help - Provides a way to check on the status of services and system resources in a more user friendly way.                                                 |
-     |                                                                                                                                                                                   |
-     |	${yellow}CONFIG:${reset}		dvanalysis works based on a configuration file: dvanalysis.conf, in wich you define the services and system resources that the script must have a look on.       |
-     |			The definition of services and resources in the configuration file is really simple, only two variables for you to populate:                                     |
-     |				                                                                                                                                                         |
-     |				services - The name of the services you want to analyse. Service names must be separated by commas. OBS: Check if the name you are inserting is the      |
-     |					   actual service name.                                                                                                                          |
-     |				                                                                                                                                                         |
-     |				     Example:                                                                                                                                            |
-     |						services=apache2,sshd,mysql-server                                                                                                       |
-     |                                                                                                                                                                                   |
-     |				resources - The system resources you want to analyse. Resources must be separated by commas.                                                             |
-     |					                                                                                                                                                 |
-     | 					Example:                                                                                                                                         | 
-     |						resources=RAM,DISK_USAGE                                                                                                                 |
-     |                                                                                                                                                                                   |
-     |	${yellow}USAGE:${reset} 		dvanalysis [OPTION] {ARGUMENT}	                                                                                                                                 |
-     |                                                                                                                                                                                   |
-     |	${yellow}OPTIONS:${reset} 	-s , make a analysis for a specific service, ignores the config file. OBS: {Argument} for this case will be the service name.                                    |
-     |		 	-r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.                                 |
-     |		 	-lr , list the supported resources for analysis.                                                                                                                 |
-     |                                                                                                                                                                                   |
-     #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-     |                                                                                                                                                                                   |
-     |	${blue}AUTHOR:${reset} 	Daniel Gomes - daniel@avantsec.com.br                                                                                                                            |
-     |                                                                                                                                                                                   |
-     |	${blue}PROPERTY:${reset} 	AvantSec                                                                                                                                                         |
-     |                                                                                                                                                                                   |
-     #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+     	${yellow}DESCRIPTION:${reset}	avant-help - Provides a way to check on the status of services and system resources in a more user friendly way.                
+                                                                                                                                                                        
+     	${yellow}CONFIG:${reset}		dvanalysis works based on a configuration file: dvanalysis.conf, in wich you define the services and system resources that the script must have a look on.
+     			The definition of services and resources in the configuration file is really simple, only two variables for you to populate:                   				                                                                                                                                                
+     				services - The name of the services you want to analyse. Service names must be separated by commas. OBS: Check if the name you are inserting is the  actual service name.                                                                                                                          
+     				     Example:                                                                                                                           
+     						services=apache2,sshd,mysql-server                                                                                      
+
+     				resources - The system resources you want to analyse. Resources must be separated by commas.                                                             
+      					Example:                                                                                                                                         
+     						resources=RAM,DISK_USAGE                                                                                                  
+     	${yellow}USAGE:${reset} 		dvanalysis [OPTION] {ARGUMENT}	                                                                                        
+
+     	${yellow}OPTIONS:${reset} 	-s , make a analysis for a specific service, ignores the config file. OBS: {Argument} for this case will be the service name.                                    
+     		 	-r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.                                 
+     		 	-lr , list the supported resources for analysis.                                                                                                
+
+     	${blue}AUTHOR:${reset} 	Daniel Gomes - daniel@avantsec.com.br                                                                                                  
+
+     	${blue}PROPERTY:${reset} 	AvantSec
 "
 
 RESOURCES="

@@ -53,5 +53,7 @@ elif [ $1 == "-p" ] ; then
 		done
 	fi
 
+else
+	echo "$ERR"
 
 fi

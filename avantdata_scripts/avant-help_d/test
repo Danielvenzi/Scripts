@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#ls -l analysis
+
+red=`tput setaf 1`
+purple=`tput setaf 125`
+yellow=`tput setaf 3`
+reset=`tput sgr0`
+
+echo "${yellow}text ${reset}"

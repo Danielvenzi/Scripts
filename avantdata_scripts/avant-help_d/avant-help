@@ -3,10 +3,16 @@
 #Autor: Daniel Gomes Venzi Gonçalves   |
 #email: daniel@avantsec.com           |
 #--------------------------------------#
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
+purple=`tput setaf 125`
+yellow=`tput setaf 3`
+blue=`tput setaf 4`
 
 ERR0="
      #--------------------------------------------------------------------------------#
-     |	ERROR:                                                                        |
+     |	${red}ERROR${reset}:                                                                        |
      #--------------------------------------------------------------------------------#
      |                                                                                |     
      |	Wrong usage of command, please use -h or --help option for more information.  |
@@ -17,13 +23,13 @@ ERR0="
 HELP="
      #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
      |            																					 |
-     |			HELP MENU																			 |
+     |			${purple}HELP MENU${reset}																			 |
      |	 																						 |
      #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
      |                                                                                                                                                                                   |
-     |	DESCRIPTION:	dvanalysis - Provides a way to check on the status of services and system resources in a more user friendly way.                                                 |
+     |	${yellow}DESCRIPTION:${reset}	avant-help - Provides a way to check on the status of services and system resources in a more user friendly way.                                                 |
      |                                                                                                                                                                                   |
-     |	CONFIG:		dvanalysis works based on a configuration file: dvanalysis.conf, in wich you define the services and system resources that the script must have a look on.       |
+     |	${yellow}CONFIG:${reset}		dvanalysis works based on a configuration file: dvanalysis.conf, in wich you define the services and system resources that the script must have a look on.       |
      |			The definition of services and resources in the configuration file is really simple, only two variables for you to populate:                                     |
      |				                                                                                                                                                         |
      |				services - The name of the services you want to analyse. Service names must be separated by commas. OBS: Check if the name you are inserting is the      |
@@ -37,28 +43,28 @@ HELP="
      | 					Example:                                                                                                                                         | 
      |						resources=RAM,DISK_USAGE                                                                                                                 |
      |                                                                                                                                                                                   |
-     |	USAGE: 		dvanalysis [OPTION] {ARGUMENT}	                                                                                                                                 |
+     |	${yellow}USAGE:${reset} 		dvanalysis [OPTION] {ARGUMENT}	                                                                                                                                 |
      |                                                                                                                                                                                   |
-     |	OPTIONS: 	-s , make a analysis for a specific service, ignores the config file. OBS: {Argument} for this case will be the service name.                                    |
+     |	${yellow}OPTIONS:${reset} 	-s , make a analysis for a specific service, ignores the config file. OBS: {Argument} for this case will be the service name.                                    |
      |		 	-r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.                                 |
      |		 	-lr , list the supported resources for analysis.                                                                                                                 |
      |                                                                                                                                                                                   |
      #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
      |                                                                                                                                                                                   |
-     |	AUTHOR: 	Daniel Gomes - daniel@avantsec.com.br                                                                                                                            |
+     |	${blue}AUTHOR:${reset} 	Daniel Gomes - daniel@avantsec.com.br                                                                                                                            |
      |                                                                                                                                                                                   |
-     |	PROPERTY: 	AvantSec                                                                                                                                                         |
+     |	${blue}PROPERTY:${reset} 	AvantSec                                                                                                                                                         |
      |                                                                                                                                                                                   |
      #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 "
 
 RESOURCES="
      #----------------------------------------------------------------------------------#
-     |       NAME       -  RESOURCE NAME (the one you should put in the config file)    |
+     |      ${purple}NAME  -  RESOURCE NAME (the one you should put in the config file)${reset}          |
      #----------------------------------------------------------------------------------#
      |                                                                                  |
-     |	     Volatile memory 	-	RAM                                             |
-     |	     'Permanent' memory	-	DISK_USAGE                                      |
+     |	     Volatile memory 	-	${yellow}RAM${reset}                                             |
+     |	     'Permanent' memory	-	${yellow}DISK_USAGE${reset}                                      |
      |	                                                                                | 
      #----------------------------------------------------------------------------------#
 " 
@@ -87,18 +93,29 @@ else
 			systemctl status $2 | grep "(running)" &> /dev/null
 
 			if [ $? -ne 0 ] ; then
-				clear ; echo "The service you're analyzing is not active or doesn't exist."
+				clear ; echo "The service you're analyzing is ${red}not active or doesn't exist.${reset}"
 			else
-				STAT="Service $2 is active (running)"
+				STAT="Service $2 is ${green}active (running)${reset}"
 				PID=$(systemctl status $2 | grep "Main PID" | grep -Po '[0-9]{3,}')
 				N=$(netstat -tulpn | grep "$PID/$2" | wc -l)
 				
 				if [ $N -lt 2 ] ; then
-					PORT=$(netstat -tulpn | grep "$PID/$2" | grep -Po ':::\K\d+')
-					echo "$PORT"
+					PORT=$(netstat -tulpn | grep "$PID/" | grep -Po ':\K\d+')
+					#echo "$PORT"
 				else
 					netstat -tulpn | grep "$PID/$2" > port.info
+					PORT=$(/usr/bin/python3 ./port.py)
 				fi
+
+				echo "
+	#----------------------------------------------#
+	|   ${purple}Service Query Result:${reset}                      |
+	#----------------------------------------------#
+	                                                                             
+	    Status: $STAT                                                
+            Service Main PID (process identifier): $PID                       
+	    Service Open Ports: $PORT
+				"
 			fi	
 			
 		fi
@@ -108,16 +125,17 @@ else
 		if [ -z $2 ] ; then
 			echo "$ERR0"
 
-		else 
-			echo "123"
+		elif [ $2 == "RAM" ] ; then
+			echo "RAM"	
+
+		elif [ $2 == "DISK_USAGE" ] ; then
+			echo "DISK_USAGE"
 		fi
 
 	elif [ $1 == "-lr" ] ; then
 		
 		echo "$RESOURCES"
-		#echo "Chegou aqui"
 	fi
-	#echo "$SERVICES" ; echo "$RESOURCES"
 
 fi
 

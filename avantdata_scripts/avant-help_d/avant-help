@@ -35,7 +35,8 @@ HELP="
      	${yellow}USAGE:${reset} 		dvanalysis [OPTION] {ARGUMENT}	                                                                                        
 
      	${yellow}OPTIONS:${reset} 	-s , make a analysis for a specific service, ignores the config file. OBS: {Argument} for this case will be the service name.                                    
-     		 	-r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.                                 
+     		 	-r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.                                 		Example: avant-help -r DISK_USAGE /mnt/dados, in this example the amount of data in /mnt/dados will be calculated.
+			
      		 	-lr , list the supported resources for analysis.                                                                                                
 
      	${blue}AUTHOR:${reset} 	Daniel Gomes - daniel@avantsec.com.br                                                                                                  
@@ -82,13 +83,13 @@ else
 			else
 				STAT="Service $2 is ${green}active (running)${reset}"
 				PID=$(systemctl status $2 | grep "Main PID" | grep -Po '[0-9]{3,}')
-				N=$(netstat -tulpn | grep "$PID/$2" | wc -l)
+				N=$(netstat -tulpn | grep "$PID/" | wc -l)
 				
 				if [ $N -lt 2 ] ; then
 					PORT=$(netstat -tulpn | grep "$PID/" | grep -Po ':\K\d+')
 					#echo "$PORT"
 				else
-					netstat -tulpn | grep "$PID/$2" > port.info
+					netstat -tulpn | grep "$PID/" > port.info
 					PORT=$(/usr/bin/python3 ./port.py)
 				fi
 
@@ -111,10 +112,89 @@ else
 			echo "$ERR0"
 
 		elif [ $2 == "RAM" ] ; then
-			echo "RAM"	
+			 #echo "RAM"	
+			 #M
+			 SWAP_ERR="0
+0
+0"
+			 #echo "$SWAP_ERR"
+			 free -h | grep "Mem:" | grep -Po '\K(\d{2,}G|\d{2,}M|\d.\dG|\d.\dM|\d{1}B|\d{1}G|\d{1}M)' > mem
+			 MEM_S=$(free -h | grep "Mem:" | grep -Po '\K(\d{2,}G|\d{2,}M|\d.\dG|\d.\dM|\d{1}B|\d{1}G|\d{1}M)' | wc -l)
+			 SWAP=$(free -h | grep "Swap:" | grep -Po '\K(\d{2,}|\d.\d|\d{1})')
+			 #echo "$SWAP"			
+ 
+			 if [ "$SWAP" != "$SWAP_ERR" ] ; then
+				
+				echo "
+     #--------------------------------------------------------------------------------#
+     |  ${red}WARNING${reset}:                                                                      |
+     #--------------------------------------------------------------------------------#
+     |                                                                                |
+     |  SWAP Partition is on, use swapoff command on the swap device                  |
+     |	and coment (#) the partition in /etc/fstab .                                  |
+     |                                                                                |
+     #--------------------------------------------------------------------------------#
+"			
+			 elif [ "$SWAP" == "$SWAP_ERR" ] ; then
+			
+				I=1
+			        while [ $I -le $MEM_S ] ;
+				do
+					line=$(sed -n ''$I'p' mem)
+					if [ $I -eq 1 ] ; then
+						total=$line	
+					elif [ $I -eq 2 ] ; then
+						used=$line
+					elif [ $I -eq 3 ] ; then
+						free=$line
+					elif [ $I -eq 4 ] ; then
+						shared=$line
+					elif [ $I -eq 5 ] ; then
+						buff=$line
+					elif [ $I -eq 6 ] ; then
+						available=$line
+					fi
+					#echo "$line"
+					#echo $I
+					I=$(($I+1))
+				done
+			
+				rm -f ./mem
+				#echo $total ; echo $used ; echo $free ; echo $shared ; echo $buff ; echo $available
+				
+				echo "
+     #--------------------------------------------------------------------------------#
+     |  ${yellow}MEMORY QUERY RESULTS${reset}:                                                         |
+     #--------------------------------------------------------------------------------#
+     |                                                                                |
+     |  ${blue}SWAP STATUS:${reset} ${red}OFF${reset}                                                              |
+     |  ${blue}RAM TOTAL:${reset} $total                                                               |
+     |  ${blue}RAM USED:${reset}  $used                                                                |
+     |                                                                                |
+     |  In case of used memory above 90% of total, ${red}inform${reset} the support team.           |
+     |                                                                                |
+     #--------------------------------------------------------------------------------#
+     
+"				
+
+			 fi			
 
 		elif [ $2 == "DISK_USAGE" ] ; then
-			echo "DISK_USAGE"
+		
+			if [ -z $3 ] ; then
+	
+				QNT=$(du -sh / 2> /dev/null | grep -Po '\K(\d{2,}G|\d{2,}M|\d.\dG|\d.\dM|\d{1}B|\d{1}G|\d{1}M)')
+				echo $QNT
+					
+
+			elif [ -n $3 ] ; then
+				
+				#echo "Chegou aqui"	
+				du -sh $3 2> /dev/null | grep -Po '\K(\d{2,}G|\d{2,}M|\d.\dG|\d.\dM|\d{1}B|\d{1}G|\d{1}M|\d{1,})' > ./blk
+				result=$(cat ./blk)
+				echo "$result"
+			fi  
+				
 		fi
 
 	elif [ $1 == "-lr" ] ; then

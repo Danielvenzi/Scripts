@@ -1,6 +1,6 @@
 #!/bin/bash
 #--------------------------------------#                                       
-#Autor: Daniel Gomes Venzi Gonçalves   |
+#Autor: Daniel Gomes Venzi Goncalves   |
 #email: daniel@avantsec.com           |
 #--------------------------------------#
 red=`tput setaf 1`
@@ -183,10 +183,13 @@ else
 		
 			if [ -z $3 ] ; then
 	
-				QNT=$(du -sh / 2> /dev/null | grep -Po '\K(\d{2,}G|\d{2,}M|\d.\dG|\d.\dM|\d{1}B|\d{1}G|\d{1}M)')
-				echo $QNT
+				#QNT=$(du -sh / 2> /dev/null | grep -Po '\K(\d{2,}G|\d{2,}M|\d.\dG|\d.\dM|\d{1}B|\d{1}G|\d{1}M)')
+				#echo $QNT
+				DISKS=$(python ./disk.py)
+				#echo "$DISKS"
+				
+				python ./disk.py
 					
-
 			elif [ -n $3 ] ; then
 				
 				#echo "Chegou aqui"	

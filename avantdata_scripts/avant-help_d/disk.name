@@ -1,2 +1,3 @@
-/dev/xvda:
-/dev/xvdb:
+/dev/sda:
+/dev/mapper/centos-root:
+/dev/mapper/centos-swap:

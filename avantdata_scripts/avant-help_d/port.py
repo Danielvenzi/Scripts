@@ -1,5 +1,5 @@
 #----------------------------------------# 
-# Autor: Daniel Gomez Venzi Gonçalves    |
+# Autor: Daniel Gomez Venzi Goncalves    |
 # E-mail: daniel@avantsec.com.br         |
 # Empresa: AvantSec                      |
 #----------------------------------------#
@@ -21,6 +21,7 @@ for line in port:
     line = line.strip('\n')
     results = str(os.popen("echo {0} | grep -Po ':\K\d+'".format(line)).read())
     results = results.strip('\n')
+    #print(results)
     i = 0
     BOOLE = 0
 

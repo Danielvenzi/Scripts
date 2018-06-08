@@ -90,7 +90,7 @@ else
 					#echo "$PORT"
 				else
 					netstat -tulpn | grep "$PID/" > port.info
-					PORT=$(/usr/bin/python3 ./port.py)
+					PORT=$(python ./port.py)
 				fi
 
 				echo "

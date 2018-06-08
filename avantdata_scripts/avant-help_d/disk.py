@@ -67,15 +67,21 @@ def DiskAnalysis(DiskArray):
 		DiskAvai = DiskAvai.strip("\n")
 		DiskPercent = DiskPercent.strip("\n")
 		DiskMount = DiskMount.strip("\n")		
-
-		print(DiskName)	
-		#print(DiskSize)
-		#print(DiskUsage)
-		#print(DiskAvai)
-		#print(DiskPercent)
-		#print(DiskMount)
 		
-		Result="""
+		if DiskSize == "":
+                         
+                                continue
+
+		elif DiskSize != "":
+
+			#print(DiskName)	
+			#print(DiskSize)
+			#print(DiskUsage)
+			#print(DiskAvai)
+			#print(DiskPercent)
+			#print(DiskMount)
+			
+			Result="""
 		DISK Query Results:
 
 		Disk Name: """+DiskName+"""
@@ -86,7 +92,7 @@ def DiskAnalysis(DiskArray):
 		Mountpoint: """+DiskMount+"""
 		
 """
-		print(Result)
+			print(Result)
 
 
 def DiskAnalysisPart(DiskArray):
@@ -160,5 +166,5 @@ def DiskAnalysisPart2(disk):
 DiskScan()
 #PrintArray(DiskStrip())
 #DiskWrite(DiskStrip())		
-#DiskAnalysis(DiskStrip())
+DiskAnalysis(DiskStrip())
 DiskAnalysisPart(DiskStrip())

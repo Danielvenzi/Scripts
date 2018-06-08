@@ -35,7 +35,7 @@ HELP="
      	${yellow}USAGE:${reset} 		dvanalysis [OPTION] {ARGUMENT}	                                                                                        
 
      	${yellow}OPTIONS:${reset} 	-s , make a analysis for a specific service, ignores the config file. OBS: {Argument} for this case will be the service name.                                    
-     		 	-r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.                                 		Example: avant-help -r DISK_USAGE /mnt/dados, in this example the amount of data in /mnt/dados will be calculated.
+     		 	-r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.               
 			
      		 	-lr , list the supported resources for analysis.                                                                                                
 
@@ -193,9 +193,7 @@ else
 			elif [ -n $3 ] ; then
 				
 				#echo "Chegou aqui"	
-				du -sh $3 2> /dev/null | grep -Po '\K(\d{2,}G|\d{2,}M|\d.\dG|\d.\dM|\d{1}B|\d{1}G|\d{1}M|\d{1,})' > ./blk
-				result=$(cat ./blk)
-				echo "$result"
+				echo "$ERR0"
 			fi  
 				
 		fi

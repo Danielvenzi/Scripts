@@ -36,7 +36,8 @@ def ServerGet():
 #ServerStat = []
 
 if 4+int(sys.argv[2])+1 == len(sys.argv):
-	
+
+	#print("With server")	
 	Hosts = HostsGet()
 	ServerName = ServerGet()
 	Results = []
@@ -64,7 +65,11 @@ if 4+int(sys.argv[2])+1 == len(sys.argv):
 			 		
 elif 4+int(sys.argv[2])+1 != len(sys.argv):
 	
+	#print("With no server")
 	Hosts = HostsGet()
+	ServerName = os.popen("nmcli | grep servers | grep -Po '\d+.\d+.\d+.\d+'").read()
+	ServerName = ServerName.strip("\n")
+	#print(ServerName)
 	Results = []
 	ServerStat = []	
 

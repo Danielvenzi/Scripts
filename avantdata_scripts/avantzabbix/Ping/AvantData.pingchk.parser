@@ -1,0 +1,32 @@
+input {
+
+	exec {
+		command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/Ping/PingChk.py 192.168.102.5"
+		#command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/PingChk.py 192.168.110.24"
+		interval => 10
+		type => "pingchk"
+	}
+
+}
+
+filter {
+	if [type] == "pingchk"
+	{
+		json {
+			source => "message"
+		}
+		
+		mutate{remove_field => ["message"]}
+                mutate{remove_field => ["@Timestamp"]}
+                mutate{remove_field => ["@version"]}
+                mutate{remove_field => ["command"]}
+		mutate{remove_field => ["host"]}
+		mutate{remove_field => ["type"]}
+	}
+
+
+}
+
+output {
+	stdout{}
+}

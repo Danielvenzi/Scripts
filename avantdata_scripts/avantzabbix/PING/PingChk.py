@@ -28,6 +28,10 @@ elif sys.argv[1] != "":
 		#print(123)
 
 		PingDict = {}
+		GenerateTime = os.popen("date +%s%3N").read()
+		GenerateTime = GenerateTime.strip("\n")
+		PingDict["GenerateTime"] = GenerateTime
+		PingDict["Host IP"] = sys.argv[1]
 		PingDict["Ping Status"] = "Failed"
 		Response = json.dumps(PingDict, ensure_ascii=False)
 		print(Response)
@@ -44,7 +48,11 @@ elif sys.argv[1] != "":
 		#Cria um dicionario com os valores TTL e TIME para depois retornar um JSON.
 
 		PingDict = {}
+		GenerateTime = os.popen("date +%s%3N").read()
+		GenerateTime = GenerateTime.strip("\n")
+		PingDict["GenerateTime"] = GenerateTime
 		PingDict["Ping Status"] = "Success"
+		PingDict["Host IP"] = sys.argv[1]
 		PingDict["Ping TTL"] = PingTTL
 		PingDict["Ping Time"] = PingTime
 	        

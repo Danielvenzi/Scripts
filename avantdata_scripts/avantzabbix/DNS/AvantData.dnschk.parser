@@ -1,0 +1,31 @@
+input {
+
+	exec {
+		command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/DNS/DNSChk.py -n 1 google.com -s 8.8.8.8"
+		interval => 10
+		type => "DNSChk"
+	}
+
+}
+
+filter {
+	if [type] == "DNSChk"
+	{
+		json {
+			source => "message"
+		}
+		
+		mutate{remove_field => ["message"]}
+                mutate{remove_field => ["@timestamp"]}
+                mutate{remove_field => ["@version"]}
+                mutate{remove_field => ["command"]}
+		mutate{remove_field => ["host"]}
+		mutate{remove_field => ["type"]}
+	}
+
+
+}
+
+output {
+	stdout{}
+}

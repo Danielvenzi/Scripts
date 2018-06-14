@@ -57,11 +57,6 @@ if 4+int(sys.argv[2])+1 == len(sys.argv):
 			Results.append(Result)
 			ServerStat.append("Success")
 
-	i=0		
-	while i <= len(Hosts)-1:
-		print(Results[i])
-		print(ServerStat[i])	
-		i += 1
 			 		
 elif 4+int(sys.argv[2])+1 != len(sys.argv):
 	
@@ -72,21 +67,78 @@ elif 4+int(sys.argv[2])+1 != len(sys.argv):
 	#print(ServerName)
 	Results = []
 	ServerStat = []	
+	HostFinal = []
 
 	for host in Hosts:
-                Result = os.popen("host {0} | grep '{1} has address' | grep -Po '.*address \K\d+.\d+.\d+.\d+'".format(host,host)).read()
+		Lines = os.popen("host {0} | grep '{1} has address' | wc -l".format(host,host)).read()
+		Lines = Lines.strip("\n")
+		Lines = int(Lines)
+		#print(Lines)
+		
+		if Lines == 1:
+                	Result = os.popen("host {0} | grep '{1} has address' | grep -Po '.*address \K\d+.\d+.\d+.\d+'".format(host,host)).read()
+	
+	                if Result == "":
+	                        ServerStat.append("Failed")
+	
+	                elif Result != "":
+	                        Result = Result.strip("\n")
+	                        #print(Result)
+				HostFinal.append(host)
+	                        Results.append(Result)
+	                        ServerStat.append("Success")
 
-                if Result == "":
-                        ServerStat.append("Failed")
+		elif Lines != 1 and Lines != 0:
+			os.system("host {0} | grep '{1} has address' > addr".format(host,host))
+			#print(Addresses)
+			Addresses = open("addr","r")			
+			Addr = open("lala","w")
 
-                elif Result != "":
-                        Result = Result.strip("\n")
-                        #print(Result)
-                        Results.append(Result)
-                        ServerStat.append("Success")
+			for line in Addresses:
+				
+				#print(line)
+				Addr = open("lala","w")
+				Addr.write(line)
+				Result = os.popen("cat lala | grep -Po '.*address \K\d+.\d+.\d+.\d+'".format(line)).read()
+				Result = Result.strip("\n")	
+				print(Result)
+				
+				if Result == "":
+					HostFinal.append(host)
+					ServerStat.append("Failed")
 
-        i=0
-        while i <= len(Hosts)-1:
-                print(Results[i])
-                print(ServerStat[i])
-                i += 1
+				elif Result != "":
+					#print("Chegou aqui")
+					HostFinal.append(host)
+					Results.append(Result)
+					ServerStat.append("Success")		
+				
+				os.system("rm -f ./lala")
+		
+		elif Lines == 0:
+			ServerStat.append("Failed")
+				
+	
+LogInput = {}
+i=0
+while i <= len(Hosts)-1:
+
+	if ServerStat[i] == "Success":
+		LogInput["Host "+str(i)] = HostFinal[i]
+		LogInput["Host "+str(i)+" IP Address"] = Results[i]
+		LogInput["DNS Server"] = ServerName
+		LogInput["Status "+str(i)] = "Success"
+
+	elif ServerStat[i] == "Failed":
+		LogInput["Host "+str(i)] = HostFinal[i]
+		LogInput["DNS Server"] = ServerName
+		LogInput["Status "+str(i)] = "Failed"
+		
+	i += 1
+
+GenerateTime = os.popen("date +%s%3N").read()
+GenerateTime = GenerateTime.strip("\n")
+LogInput["GenerateTime"] = GenerateTime
+
+Response = json.dumps(LogInput, ensure_ascii=False)
+print(Response)

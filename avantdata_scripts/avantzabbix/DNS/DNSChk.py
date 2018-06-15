@@ -131,6 +131,7 @@ def ResolveOne(Host,Bool):
 
 def ResolveSeveral(Host,Bool):
 
+	#print("Chegou aqui")
 	Main = []
 	Addr = []
 	HostName = []
@@ -139,11 +140,12 @@ def ResolveSeveral(Host,Bool):
 	Result = []
 
 	if Bool == 1:
-		Addresses = open("addr","r+")
+		Addresses = open("addr","w")
 		Addrs=os.popen("host {0} {1} | grep '{2} has address'".format(Host,GetPassedServer(),Host)).read()
 		Addresses.write(Addrs)
+		Addresses.close()
+		Addresses = open("addr","r")
 		
-
 		for line in Addresses:
 			line = line.strip("\n")
 			Addre = os.popen("echo {0} | grep '{1} has address' | grep -Po '\K\d+.\d+.\d+.\d+'".format(line,Host)).read()
@@ -164,9 +166,11 @@ def ResolveSeveral(Host,Bool):
 		return Main
 
 	elif Bool == 0:	
-		Addresses = open("addr","r+")
+		Addresses = open("addr","w")
 		Addrs=os.popen("host {0} | grep '{1} has address'".format(Host, Host)).read()
 		Addresses.write(Addrs)
+		Addresses.close()
+		Addresses = open("addr","r")
 
 		for line in Addresses:
 			line = line.strip("\n")
@@ -297,7 +301,7 @@ def  HostResolve(Bool,Hosts):
 # Constroi o JSON que sera enviado para indexacao no AvantData, tal JSON 
 # e construido baseado nos resultados da query DNS.
 
-def JSONConstruct():
+def JSONConstruct(DNS_QUERY):
 
 	LogInput = {}
 	i=0
@@ -328,4 +332,5 @@ def JSONConstruct():
 Result = HostResolve(IfServerIsDefault(),GetHosts())
 
 print(Result)
+print(len(Result))
 #print(Result[1])

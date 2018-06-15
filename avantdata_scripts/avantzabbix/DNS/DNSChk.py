@@ -333,4 +333,6 @@ Result = HostResolve(IfServerIsDefault(),GetHosts())
 
 print(Result)
 print(len(Result))
+print(Result[0])
+print(Result[1])
 #print(Result[1])

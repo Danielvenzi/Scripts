@@ -1,0 +1,34 @@
+input {
+ 
+  http_poller {
+		urls => {
+				url => "http://192.168.102.5:9200"
+			}
+		request_timeout => 60
+		codec => "json"
+		metadata_target => "http_poller_metadata"
+		interval => 30
+		type => "http_poller"
+  	      }	
+
+}
+
+filter {
+	if [type] == "http_poller" {
+	
+	
+		mutate{remove_field => ["@timestamp"]}	
+                mutate{remove_field => ["response_headers"]}
+                mutate{remove_field => ["@version"]}
+                mutate{remove_field => ["tagline"]}
+                mutate{remove_field => ["version"]}
+                mutate{remove_field => ["type"]}		
+	
+	}
+}
+
+output {
+	  stdout {
+		    codec => rubydebug
+		 }
+}

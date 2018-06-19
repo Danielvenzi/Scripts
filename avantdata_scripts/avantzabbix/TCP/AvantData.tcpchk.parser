@@ -1,0 +1,32 @@
+input {
+
+	exec {
+		command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/TCP/TCPChk.py -n 1 192.168.102.5 -p 3 80 23 22"
+		#command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/PingChk.py 192.168.110.24"
+		interval => 60
+		type => "tcpchk"
+	}
+
+}
+
+filter {
+	if [type] == "tcpchk"
+	{
+		json {
+			source => "message"
+		}
+		
+		mutate{remove_field => ["message"]}
+                mutate{remove_field => ["@Timestamp"]}
+                mutate{remove_field => ["@version"]}
+                mutate{remove_field => ["command"]}
+		mutate{remove_field => ["host"]}
+		mutate{remove_field => ["type"]}
+	}
+
+
+}
+
+output {
+	stdout{}
+}

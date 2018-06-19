@@ -131,7 +131,6 @@ def ResolveOne(Host,Bool):
 
 def ResolveSeveral(Host,Bool):
 
-	#print("Chegou aqui")
 	Main = []
 	Addr = []
 	HostName = []
@@ -161,9 +160,12 @@ def ResolveSeveral(Host,Bool):
 		Result.append(Addr)
 		Result.append(Server)
 		
-		Main.append(Result)
+		#Main.append(Result)
+
 		
-		return Main
+		
+		#return Main
+		return Result
 
 	elif Bool == 0:	
 		Addresses = open("addr","w")
@@ -187,9 +189,10 @@ def ResolveSeveral(Host,Bool):
                 Result.append(Addr)
                 Result.append(Server)
 
-                Main.append(Result)
+                #Main.append(Result)
 
-                return Main
+                #return Main
+		return Result
 
 #---------------------------------------------------------------------------
 # Resolve os nomes passados via o servidor DNS escolhido, no caso de algum
@@ -333,6 +336,7 @@ Result = HostResolve(IfServerIsDefault(),GetHosts())
 
 print(Result)
 print(len(Result))
-print(Result[0])
-print(Result[1])
+print(Result[0][2])
+print(Result[1][2])
+#print(Result[1])
 #print(Result[1])

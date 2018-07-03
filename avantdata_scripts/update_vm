@@ -1,0 +1,111 @@
+#!/bin/bash                        
+# Author: Daniel Gomes Venzi Goncalves |
+# Email: daniel@avantsec.com.br        |
+# Propriedade: AvantSec                |
+#--------------------------------------#
+
+CONTROL=1
+
+ERR="
+	Wrong usage of command, use -h or --help for help.
+"
+
+HELP="
+	DESCRIPTION:	update_vm, is a basic shell script that updates virtual machines
+			from AvantData that belong to a network range of adresses (192.168.0.0/24) 
+			that should be specified by the user.
+
+	USAGE:		update_vm -n [Number of AvantBallances] [Number of AvantCollector] [Number of AvantNode]
+				     [Number of AvantDatas] [Number of AvantMNT] [Number of AvantCache] [AvantChat]
+				     [Number of AvantDirectory]
+
+	EXAMPLE:	update_vm -n 1 2 6 2 1 2 2 2 
+"
+
+if [ -z $1 ] ; then
+
+	echo "$ERR"
+
+elif [ $1 == "-h" ] || [ $1 == "--help" ] ; then
+
+	echo "$HELP"
+
+elif [ $1 != "-n" ] ; then
+		
+	echo "$ERR"
+
+elif [ $1 == "-n" ] ; then
+
+	if [ $2 -eq $2 ] && [ $3 -eq $3 ] && [ $4 -eq $4 ] && [ $5 -eq $5 ] && [ $6 -eq $6 ] && [ $7 -eq $7 ] && [ $8 -eq $8 ] && [ $9 -eq $9 ]; then
+	
+		while [ $CONTROL -le 8 ] 
+		do
+			I=1
+			if [ $CONTROL -eq 1 ] ; then
+		
+				while [ $I -le $2 ]
+				do
+					ssh root@10.20.10.$I yum update
+				done	
+				CONTROL=$(($CONTROL+1))
+				
+			elif [ $CONTROL -eq 2 ] ; then
+			
+				while [ $I -le $3 ]
+				do
+					ssh root@10.20.20.$I yum update
+				done
+				CONTROL=$(($CONTROL+1))		
+			
+			elif [ $CONTROL -eq 3 ] ; then
+	
+				while [ $I -le $4 ]
+				do
+					ssh root@10.20.30.$I yum update
+				done
+				CONTROL=$(($CONTROL+1))
+	
+			elif [ $CONTROL -eq 4 ] ; then
+	
+				while [ $I -le $5 ]
+				do
+					ssh root@10.20.40.$I yum update
+				done
+				CONTROL=$(($CONTROL+1))
+			
+			elif [ $CONTROL -eq 5 ] ; then
+	
+				while [ $I -le $6 ]
+				do
+					ssh root@10.20.50.$I yum update
+				done
+				CONTROL=$(($CONTROL+1))
+	
+			elif [ $CONTROL -eq 6 ] ; then
+			
+				while [ $I -le $7 ]
+				do
+					ssh root@10.20.60.$I yum update
+				done
+				CONTROL=$(($CONTROL+1))
+	
+			elif [ $CONTROL -eq 7 ] ; then
+	
+				while [ $I -le $8 ]
+				do
+					ssh root@10.20.70.$I yum update
+				done
+				CONTROL=$(($CONTROL+1))
+	
+			elif [ $CONTROL -eq 8 ] ; then
+	
+				while [ $I -le $9 ]
+				do
+					ssh root@10.20.80.$I yum update
+				done
+				CONTROL=$(($CONTROL+1))
+	
+			fi
+		done
+	fi
+fi

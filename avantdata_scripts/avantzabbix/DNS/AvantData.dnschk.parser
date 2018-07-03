@@ -1,7 +1,7 @@
 input {
 
 	exec {
-		command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/DNS/DNSChk.py -n 1 google.com -s 8.8.8.8"
+		command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/DNS/DNSChk.py -n 3 google.com 9gag.com g1 -s 8.8.8.8"
 		interval => 10
 		type => "DNSChk"
 	}

@@ -1,34 +1,39 @@
 input {
  
-  http_poller {
-		urls => {
-				url => "http://192.168.102.5:9200"
-			}
-		request_timeout => 60
-		codec => "json"
-		metadata_target => "http_poller_metadata"
-		interval => 30
-		type => "http_poller"
-  	      }	
+ 	exec {
+                command  => "/root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/WEB/WebChk.sh -h https://www.avantsec.com.br"
+                interval => 60
+                type     => "webcheck"
+        }		
 
 }
 
 filter {
-	if [type] == "http_poller" {
-	
-	
-		mutate{remove_field => ["@timestamp"]}	
-                mutate{remove_field => ["response_headers"]}
-                mutate{remove_field => ["@version"]}
-                mutate{remove_field => ["tagline"]}
-                mutate{remove_field => ["version"]}
-                mutate{remove_field => ["type"]}		
+	if [type] == "webcheck" {
+
+		 csv {
+                                source => "message"
+                                columns => ["HTTP Code","Status","GenerateTime","Host"]
+                                separator => ";"
+                     }
+
+		mutate{remove_field => ["message"]}
+		mutate{remove_field => ["host"]}
+		mutate{remove_field => ["command"]}
+		mutate{remove_field => ["@timestamp"]}
+		mutate{remove_field => ["@version"]}
+		
 	
 	}
 }
 
 output {
-	  stdout {
+
+	if [type] == "webcheck" {
+	 
+		 stdout {
 		    codec => rubydebug
 		 }
+
+	}
 }

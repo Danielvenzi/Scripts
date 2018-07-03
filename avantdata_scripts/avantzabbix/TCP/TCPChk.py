@@ -75,30 +75,40 @@ def TestTCP(Hosts,Ports):
 def JSONEncode(Hosts, Ports, Result):
 
 	Dicionary = {}
-	i = 0
-	j = 0
+	#i = 0
+	#j = 0
 	
-	while j <= len(Ports)-1:
-		Dicionary["Port {0}".format(j)] = Ports[j]
-		j += 1
-	
-	while i <= len(Hosts)-1:
-		Dicionary["Host {0}".format(i)] = Hosts[i]		
-		i += 1
+	#while j <= len(Ports)-1:
+	#	Dicionary["Port {0}".format(j+1)] = Ports[j]
+	#	j += 1
+	#
+	#while i <= len(Hosts)-1:
+	#	Dicionary["Host {0}".format(i+1)] = Hosts[i]		
+	#	i += 1
 
 	i=0
 	while i <= len(Hosts)-1:
 	
 		j=0
-		while j <= len(Ports)-1:
+		#while j <= len(Ports)-1:
 			#Dicionary["Host {0} port {1}".format(i,Ports[j])] = Result[i][j]
-			if Result[i][j] == "0":
-				Dicionary["Host {0} port {1}".format(i,Ports[j])] = "Success"
+		#	if Result[i][j] == "0":
+		#		Dicionary["Host {0} port {1}".format(i+1,Ports[j])] = "Success"
 
-			elif Result [i][j] == "1":
-				Dicionary["Host {0} port {1}".format(i,Ports[j])] = "Failed"
+		#	elif Result [i][j] == "1":
+		#		Dicionary["Host {0} port {1}".format(i+1,Ports[j])] = "Failed"
 
-			j += 1
+		#	j += 1
+
+		while j <= len(Ports)-1:
+                        #Dicionary["Host {0} port {1}".format(i,Ports[j])] = Result[i][j]
+                       if Result[i][j] == "0":
+                               Dicionary["Host {0} Status".format(i+1)] = "Port {0}: Success".format(Ports[j])
+
+                       elif Result [i][j] == "1":
+                               Dicionary["Host {0} Status".format(i+1)] = "Port {0}: Failed".format(Ports[j])
+
+                       j += 1
 		i += 1
 
 	GenerateTime = os.popen("date +%s%3N").read()

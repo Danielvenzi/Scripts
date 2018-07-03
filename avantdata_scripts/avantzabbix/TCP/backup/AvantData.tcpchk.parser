@@ -1,16 +1,16 @@
 input {
 
 	exec {
-		command=> "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/PING/PingChk.py 192.168.102.5"
+		command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/TCP/TCPChk.py -n 1 192.168.102.5 -p 4 80 23 22 9200"
 		#command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/PingChk.py 192.168.110.24"
-		interval => 10
-		type => "pingchk"
+		interval => 60
+		type => "tcpchk"
 	}
 
 }
 
 filter {
-	if [type] == "pingchk"
+	if [type] == "tcpchk"
 	{
 		json {
 			source => "message"

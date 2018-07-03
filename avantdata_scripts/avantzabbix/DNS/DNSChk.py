@@ -40,7 +40,7 @@ def GetPassedServer():
 
 def GetDefaultServer():
 
-	ServerName = os.popen("nmcli | grep servers | grep -Po '\d+.\d+.\d+.\d+'").read()
+	ServerName = os.popen("nmcli | grep servers | grep -Po '\d+.\d+.\d+.\d+' | sed -n 1p").read()
         ServerName = ServerName.strip("\n")
 
 	return ServerName
@@ -304,22 +304,16 @@ def  HostResolve(Bool,Hosts):
 # Constroi o JSON que sera enviado para indexacao no AvantData, tal JSON 
 # e construido baseado nos resultados da query DNS.
 
-def JSONConstruct(DNS_QUERY):
+def JSONConstruct(Result):
 
 	LogInput = {}
 	i=0
-	while i <= len(Hosts)-1:
+	while i <= int(sys.argv[2])-1:
 	
-	        if ServerStat[i] == "Success":
-	                LogInput["Host "+str(i)] = HostFinal[i]
-	                LogInput["Host "+str(i)+" IP Address"] = Results[i]
-	                LogInput["DNS Server"] = ServerName
-	                LogInput["Status "+str(i)] = "Success"
-	
-	        elif ServerStat[i] == "Failed":
-	                LogInput["Host "+str(i)] = HostFinal[i]
-	                LogInput["DNS Server"] = ServerName
-	                LogInput["Status "+str(i)] = "Failed"
+	       	LogInput["Host {0}".format(i+1)] = Result[i][0]
+		LogInput["Host {0} Status".format(i+1)] = Result[i][1]
+		LogInput["Host {0} Addresses".format(i+1)] = Result[i][2]
+		LogInput["DNS Server"] = Result[i][3]
 	
 	        i += 1
 	
@@ -328,15 +322,23 @@ def JSONConstruct(DNS_QUERY):
 	LogInput["GenerateTime"] = GenerateTime
 
 	Response = json.dumps(LogInput, ensure_ascii=False)
-	return Response
+	print(Response)
 
 #----------------------------------------------------------------------------
 
-Result = HostResolve(IfServerIsDefault(),GetHosts())
+#Result = HostResolve(IfServerIsDefault(),GetHosts())
+JSONConstruct(HostResolve(IfServerIsDefault(),GetHosts()))
 
-print(Result)
-print(len(Result))
-print(Result[0][2])
-print(Result[1][2])
+#print(Result)
+#print(len(Result))
+#print(sys.argv[2])
+#print(Result[0][0])
+#print(Result[0][1])
+#print(Result[0][2])
+#print(Result[0][3])
+#print(Result[1][0])
+#print(Result[1][1])
+#print(Result[1][2])
+#print(Result[1][3])
 #print(Result[1])
 #print(Result[1])

@@ -1,6 +1,6 @@
 PING 192.168.102.5 (192.168.102.5) 56(84) bytes of data.
-64 bytes from 192.168.102.5: icmp_seq=1 ttl=63 time=15.6 ms
+64 bytes from 192.168.102.5: icmp_seq=1 ttl=63 time=4.22 ms
 
 --- 192.168.102.5 ping statistics ---
 1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 15.616/15.616/15.616/0.000 ms
+rtt min/avg/max/mdev = 4.228/4.228/4.228/0.000 ms

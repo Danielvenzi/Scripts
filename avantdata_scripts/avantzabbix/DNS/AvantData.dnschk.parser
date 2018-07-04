@@ -1,7 +1,7 @@
 input {
 
 	exec {
-		command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/DNS/DNSChk.py -n 3 google.com 9gag.com g1 -s 8.8.8.8"
+		command => "python /root/AUTO_SCRIPT/Scripts/avantdata_scripts/avantzabbix/DNS/DNSChk.py -n 3 google.com 9gag.com g1 -s 192.168.101.50"
 		interval => 10
 		type => "DNSChk"
 	}
@@ -20,7 +20,7 @@ filter {
                 mutate{remove_field => ["@version"]}
                 mutate{remove_field => ["command"]}
 		mutate{remove_field => ["host"]}
-		mutate{remove_field => ["type"]}
+		#mutate{remove_field => ["type"]}
 	}
 
 

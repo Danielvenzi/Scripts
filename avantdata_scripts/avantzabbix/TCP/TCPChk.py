@@ -86,12 +86,13 @@ def JSONEncode(Hosts, Ports, Result):
 	#	Dicionary["Host {0}".format(i+1)] = Hosts[i]		
 	#	i += 1
 
+
 	i=0
 	while i <= len(Hosts)-1:
 	
 		j=0
 		#while j <= len(Ports)-1:
-			#Dicionary["Host {0} port {1}".format(i,Ports[j])] = Result[i][j]
+		#	#Dicionary["Host {0} port {1}".format(i,Ports[j])] = Result[i][j]
 		#	if Result[i][j] == "0":
 		#		Dicionary["Host {0} port {1}".format(i+1,Ports[j])] = "Success"
 
@@ -99,14 +100,16 @@ def JSONEncode(Hosts, Ports, Result):
 		#		Dicionary["Host {0} port {1}".format(i+1,Ports[j])] = "Failed"
 
 		#	j += 1
-
+		Dicionary["Host {0}".format(i+1)] = Hosts[i]
+		
 		while j <= len(Ports)-1:
-                        #Dicionary["Host {0} port {1}".format(i,Ports[j])] = Result[i][j]
+                       
+		       Dicionary["Port {0}".format(j+1)] = Ports[j] 
                        if Result[i][j] == "0":
-                               Dicionary["Host {0} Status".format(i+1)] = "Port {0}: Success".format(Ports[j])
+                               Dicionary["Host {0} Status {1}".format(i+1,j+1)] = "Port {0}: Success".format(Ports[j])
 
-                       elif Result [i][j] == "1":
-                               Dicionary["Host {0} Status".format(i+1)] = "Port {0}: Failed".format(Ports[j])
+                       elif Result[i][j] == "1":
+                               Dicionary["Host {0} Status {1}".format(i+1,j+1)] = "Port {0}: Failed".format(Ports[j])
 
                        j += 1
 		i += 1

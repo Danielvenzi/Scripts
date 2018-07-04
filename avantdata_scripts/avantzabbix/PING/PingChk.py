@@ -8,6 +8,18 @@ import os
 import sys
 import json
 
+def GetHosts():
+
+        if sys.argv[1] == "-n":
+                Hosts=[]
+                i=3
+                while i <= int(sys.argv[2])+2:
+                        #print(sys.argv[i])
+                        Hosts.append(sys.argv[i])
+                        i += 1
+                return Hosts
+
+
 def PingErr():
 
 	ping = os.system("ping -c 1 {0} > res".format(sys.argv[1]))
@@ -22,10 +34,11 @@ if sys.argv[1] == "":
 
 elif sys.argv[1] != "":
 
+	#Hosts = GetHosts()
+	#print(Hosts)
 	Bool = PingErr()		
 
 	if Bool == "0":
-		#print(123)
 
 		PingDict = {}
 		GenerateTime = os.popen("date +%s%3N").read()

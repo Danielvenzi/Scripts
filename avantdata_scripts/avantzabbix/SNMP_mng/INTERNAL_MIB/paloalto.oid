@@ -1,0 +1,30 @@
+#                                                                                          |
+#    PaloAlto Firewall - Objetos interessantes para análise dos usuários no AvantData      |
+#											   |
+#------------------------------------------------------------------------------------------#
+
+
+# CPU de gerenciamento
+#CPUMng:hrProcessorLoad.1
+CPUMng:1.3.6.1.2.1.25.3.3.1.2.1:CPUGerencia
+# CPU de dados
+#CPUData:hrProcessorLoad.2
+CPUData:1.3.6.1.2.1.25.3.3.1.2.2:CPUDados
+# Tempo que o sistema está ativo
+#SYSUp:hrSystemUptime.0
+SYSUp:1.3.6.1.2.1.25.1.1.0:TempoAtivo
+# Máximo de sessões suportadas por esse dispositivo
+#MAXSes:panSessionMax.0
+MAXSes:1.3.6.1.4.1.25461.2.1.2.3.2.0:SessoesMaximas
+# Total de sessões ativas
+#PANSes:panSessionActive.0
+PANSes:1.3.6.1.4.1.25461.2.1.2.3.3.0:SessoesAtivas
+# Sessões TCP ativas
+#TCPSes:panSessionActiveTcp.0
+TCPSes:1.3.6.1.4.1.25461.2.1.2.3.4.0:SessoesTCP
+# Sessões UDP ativas
+#UDPSes:panSessionActiveUdp.0
+UDPSes:1.3.6.1.4.1.25461.2.1.2.3.5.0:SessoesUDP
+# Sessões ICMP ativas
+#ICMPSes:panSessionActiveICMP.0
+ICMPSes:1.3.6.1.4.1.25461.2.1.2.3.6.0:SessoesICMP

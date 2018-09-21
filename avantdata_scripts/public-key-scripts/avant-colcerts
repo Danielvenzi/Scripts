@@ -23,6 +23,10 @@ if [ -z $1 ] ; then
 	
 	echo "$ERR"
 
+elif [ $1 == "-h" ] || [ $1 == "--help" ] ; then
+
+	echo "$HELP"
+
 elif [ $1 == "-a" ] ; then
 
 	if [ -z $2 ] ; then

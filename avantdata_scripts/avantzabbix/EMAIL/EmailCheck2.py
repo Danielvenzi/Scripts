@@ -1,12 +1,15 @@
 # Import smtplib for the actual sending function
 import smtplib
+import sys
 
 # Import the email modules we'll need
 from email.mime.text import MIMEText
 
 textfile = "./textfile"
-me = "gomesvenzi@gmail.com"
-you = "gomesvenzi@gmail.com"
+me = "root@avantsec.com.br"
+#you = "gomesvenzi@gmail.com"
+you = sys.argv[1]
+print(you)
 
 # Open a plain text file for reading.  For this example, assume that
 # the text file contains only ASCII characters.

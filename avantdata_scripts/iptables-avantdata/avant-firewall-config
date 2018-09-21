@@ -1,0 +1,80 @@
+#!/bin/bash
+
+ERR="
+	Wrong usage of command, use -h or --help for options.
+"
+
+HELP="
+	DESCRIPTION - avant-firewall-config é um utilitário para configuração do firewall
+		      a medida que novos parser são criados na aplicação AvantData.
+
+	USAGE	    - avant-firewall-config [AVANTCOLLECTOR_IP] [IP_DISPOSITIVO] [PORTA_DESTINO] {PORTA_REDIRECIONADA}
+
+	AUTHOR      - Daniel Gomes, daniel@avantsec.com.br
+"
+
+if [ -z $1 ] ; then
+
+	echo "$ERR"
+
+elif [ $1 == "-h" ] || [ $1 == "--help" ] ; then
+
+	echo "$HELP" 
+
+elif [ -n $1 ] && [ -z $2 ] ; then
+
+	echo "$ERR"
+
+elif [ -n $1 ] && [ -n $2 ] && [ -z $3 ] ; then
+
+	echo "$ERR"
+
+elif [ -n $1 ] && [ -n $2 ] && [ -n $3 ] ; then
+
+	#echo "Chegou aqui"
+	
+	if [ $3 -le 1024 ] ; then
+	
+		#echo "Porta 514"
+		if [ -z $4 ] ; then
+
+			echo "$ERR"
+		
+		elif [ -n $4 ] ; then
+
+			ssh root@$1 iptables -t nat -C PREROUTING -s $2 -p udp -m udp --dport $3 -j REDIRECT --to-port $4
+			BOOL=$?
+
+			if [ $BOOL -ne 0 ] ; then
+
+				ssh root@$1 iptables -t nat -A PREROUTING -s $2 -p udp -m udp --dport $3 -j REDIRECT --to-port $4			
+
+			fi
+
+			ssh root@$1 iptables -t filter -C INPUT -s $2 -p udp -m udp --dport $4 -j ACCEPT 
+			BOOL=$?			
+
+			if [ $BOOL -ne 0 ] ; then
+			
+				ssh root@$1 iptables -t filter -A INPUT -s $2 -p udp -m udp --dport $4 -j ACCEPT
+
+			fi
+
+		fi
+	
+	elif [ $3 -gt 1024 ] ; then
+
+		#echo "Porta n é 514"
+
+			ssh root@$1 iptables -t filter -C INPUT -s $2 -p udp -m udp --dport $3 -j ACCEPT
+			BOOL=$?
+
+			if [ $BOOL -ne 0 ] ; then
+			
+				ssh root@$1 iptables -t filter -A INPUT -s $2 -p udp -m udp --dport $3 -j ACCEPT
+		
+			fi
+
+	fi
+
+fi

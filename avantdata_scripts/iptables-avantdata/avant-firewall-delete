@@ -1,0 +1,45 @@
+#!/bin/bash
+
+ERR="
+	Wrong usage of command, use -h or --help for more options
+"
+
+HELP="
+	DESCRIPTION	-	avant-firewall-delete é um utilitário feito para deletar regras específicas
+				do firewall iptables quando o parser for desativado.
+
+	USAGE		-	avant-firewall-delete [COLLECTOR_IP] [SOURCE_IP] [DESTINATION_PORT] {REDIRECT_PORT}
+
+	AUTHOR		-	Daniel Gomes, daniel@avantsec.com.br
+"
+
+if [ -z $1 ] ; then
+
+	echo "$ERR"
+	
+elif [ $1 == "-h" ] || [ $1 == "--help" ] ; then
+
+	echo "$HELP"
+
+elif [ -n $1 ] && [ -z $2 ] ; then
+	
+	echo "$ERR"
+
+elif [ -n $1 ] && [ -n $2 ] && [ -z $3 ] ; then
+
+	echo "$ERR"
+
+elif [ -n $1 ] && [ -n $2 ] && [ -n $3 ] ; then
+
+	if [ $3 -le 1024 ] && [ -n $4 ] ; then
+
+		ssh root@$1 iptables -t nat -D PREROUTING -s $2 -p udp -m udp --dport $3 -j REDIRECT --to-port $4	
+		ssh root@$1 iptables -t filter -D INPUT -s $2 -p udp -m udp --dport $4 -j ACCEPT
+
+	elif [ $3 -gt 1024 ] && [ -z $4 ] ; then
+
+		ssh root@$1 iptables -t filter -D INPUT -s $2 -p udp -m udp --dport $3 -j ACCEPT
+		
+	fi
+
+fi

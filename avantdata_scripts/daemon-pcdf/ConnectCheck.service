@@ -1,0 +1,13 @@
+[UNIT]
+Description=Servico custom made para verificar conexoes com AvantData
+After=network.target
+
+[Service]
+Type=simple
+User=
+WorkingDirectory=
+ExecStart=
+Restart=
+
+[Install]
+WantedBy=multi-user.target

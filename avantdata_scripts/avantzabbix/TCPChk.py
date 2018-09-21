@@ -6,6 +6,8 @@
 import os
 import sys
 import json
+import time
+import random
 
 #---------------------------------------------------------------------------
 # Pega o nome (ou endereco) dos hosts que sofrerao o teste de conexao 
@@ -65,14 +67,15 @@ def TestTCP(Hosts,Ports):
 
 		FinalResult.append(HostResult)
 		i += 1
-
+	
+	#print(FinalResult)
 	return FinalResult
 
 #---------------------------------------------------------------------------
 # Deixa os Hosts, Portas e resultados de conexao em um formato JSON
 # afim de facilitar a indexacao
 
-def JSONEncode(Hosts, Ports, Result):
+def JSONEncode(Hosts, Ports, Result, time):
 
 	Dicionary = {}
 	#i = 0
@@ -100,16 +103,17 @@ def JSONEncode(Hosts, Ports, Result):
 		#		Dicionary["Host {0} port {1}".format(i+1,Ports[j])] = "Failed"
 
 		#	j += 1
-		Dicionary["Host {0}".format(i+1)] = Hosts[i]
-		
+		#Dicionary["Host {0}".format(i+1)] = Hosts[i]
+		#print("Chegou aqui")	
 		while j <= len(Ports)-1:
                        
-		       Dicionary["Port {0}".format(j+1)] = Ports[j] 
+		       #Dicionary["Port {0}".format(j+1)] = Ports[j] 
                        if Result[i][j] == "0":
-                               Dicionary["Host {0} Status {1}".format(i+1,j+1)] = "Port {0}: Success".format(Ports[j])
+				#print("Chegou aqui")
+                        	Dicionary["Status"] = "Success"
 
                        elif Result[i][j] == "1":
-                               Dicionary["Host {0} Status {1}".format(i+1,j+1)] = "Port {0}: Failed".format(Ports[j])
+                               Dicionary["Status"] = "Failed"
 
                        j += 1
 		i += 1
@@ -117,8 +121,9 @@ def JSONEncode(Hosts, Ports, Result):
 	GenerateTime = os.popen("date +%s%3N").read()
         GenerateTime = GenerateTime.strip("\n")
         Dicionary["GenerateTime"] = GenerateTime
-	Dicionary["Hosts"] = Hosts
-	Dicionary["Ports"] = Ports
+	Dicionary["Host"] = Hosts
+	Dicionary["Port"] = Ports
+	Dicionary["Response Time"] = time
 
         Response = json.dumps(Dicionary, ensure_ascii=False)
         print(Response)
@@ -126,8 +131,10 @@ def JSONEncode(Hosts, Ports, Result):
 	
 Hosts = GetHosts()
 Ports = GetPorts()
+then = time.time()
 Result = TestTCP(Hosts, Ports)
-JSONEncode(Hosts, Ports, Result)
+now = time.time()
+JSONEncode(Hosts, Ports, Result, now-then)
 
 
 #print(Hosts)

@@ -1,0 +1,9 @@
+#                                                                        |
+#	MIB e o arquivo correspondente com os OID's mais interessantes   |
+#                                                                        |
+#------------------------------------------------------------------------#
+
+PAN:./INTERNAL_MIB/paloalto.oid
+INTELBRAS:./INTERNAL_MIB/intelbras.oid
+WTCHG:./INTERNAL_MIB/watchguard.oid
+CHKP:./INTERNAL_MIB/checkpoint.oid

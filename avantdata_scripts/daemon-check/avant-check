@@ -1,0 +1,61 @@
+#!/bin/bash
+
+#systemctl status $1 | grep "Main PID" | grep -Po '[0-9]{3,}'
+
+
+ERR="
+	Wrong usage of command, use -h or --help for help.
+"
+HELP="
+	DESCRIPTION - avant-check é um utilitário usado pelo AvantData para verificação
+		      do uso de memória e disco em VM's especificas.
+			
+	VM 	    - VM's disponíveis para utilização por hora são: AvantCollector e
+		      AvantNode.
+
+	USO	    - avant-check -s [NOME DO SERVIÇO]	      	
+			Ex: avant-check elasticsearch
+	
+	AUTOR	    - Daniel Gomes, daniel@avantsec.com.br
+	
+"
+
+if [ -z $1 ] ; then
+
+	echo "$ERR"
+
+elif [ $1 == "-h" ] || [ $1 == "--help" ] ; then
+
+	echo "$HELP"
+
+elif [ $1 == "-s" ] ; then
+
+	if [ $2 != "elasticsearch" ] && [ $2 != "logstash" ] ; then
+		
+		SERVICE=$2
+		PID=$(systemctl status $2 | grep "Main PID" | grep -Po '[0-9]{3,}')
+		echo $PID
+	
+		RES=$(top -d1 -n1 -p$PID | grep "$PID" | cut -c38-44)
+		echo $RES
+	
+	elif [ $2 == "elasticsearch" ] ; then
+		
+		SERVICE=$2
+		PID_PRE=$(systemctl status $2 | grep "Main PID" | grep -Po '[0-9]{3,}')
+		PID=$(($PID_PRE+1))
+		RES=$(top -d1 -n1 -p$PID | grep "$PID" | cut -c38-44)
+
+	elif [ $2 == "logstash" ] ; then
+		
+		SERVICE=$2
+		PID_PRE=$(systemctl status $2 | grep "Main PID" | grep -Po '[0-9]{3,}')
+		PID=$(($PID_PRE+1))
+		RES=$(top -d1 -n1 -p$PID | grep "$PID" | cut -c38-44)
+		
+	fi
+		
+	echo "$SERVICE;$PID;$RES"
+
+
+fi

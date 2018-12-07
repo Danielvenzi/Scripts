@@ -1,6 +1,6 @@
 # Arquivo de configuração do serviço de análise de rede para   |
-# envio de logs a AvantCollectors remotos. Aqui você ira       |
-# definir o caminho absoluto dos parsers. Os caminhos devem    |
+# envio de logs a AvantCollectors remotos. Aqui você definirá  |
+# o caminho absoluto dos parsers. Os caminhos devem            |
 # necessariamente separados por espaços.                       |
 #                                                              |
 # Autor: Daniel Gomes - daniel@avantsec.com.bbr                |

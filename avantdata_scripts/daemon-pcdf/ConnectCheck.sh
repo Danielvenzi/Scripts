@@ -25,7 +25,6 @@ CACHEW_OUT=$(cat ./ConnectCheck_config | grep CacheWriteOUT)
 CACHEW_COUNT=$(echo "$CACHEW_IN" | awk -F":" '{print NF-1}')
 CACHEW_STOP=$(($CACHEW_COUNT+1))
 
-
 #Declaração das variáveis a aprtir do arquivo de configuração do parser  de leitura em arquivos
 CACHER_IN=$(cat ./ConnectCheck_config | grep CacheReadIN)
 CACHER_OUT=$(cat ./ConnectCheck_config | grep CacheReadOUT)
@@ -35,7 +34,6 @@ CACHER_STOP=$(($CACHER_COUNT+1))
 while [ $STAT == "A" ] 
 do
 	if [ $LOOP == "0" ] ; then
-	
 		#Movimentação dos parsers de rede para as pastas de funcionamento correto
 		while [ $ROLLER == "A" ]
 		do
@@ -52,18 +50,14 @@ do
 		        fi
 	
 		        I=$(($I+1))
-
 		done		
-
 		I=2
 		#STAT="B"
 		LOOP="1"
 	
 	elif [ $LOOP == "1" ] ; then
-	 
-		while [ $LOOP == "1" ] 
+	 	while [ $LOOP == "1" ] 
 		do
-		
 			ping -c 1  $1
 			if [ $? != "0" ] ; then
 		
@@ -122,7 +116,6 @@ do
 		do
 			ping -c 1 $1
 			if [ $? == "0" ] ; then
-
 				#Executa a mudança dos parsers para voltar o envio de logs pela rede e leitura do arquivo de cache
 				while [ $ROLLER == "D" ]
                                 do
@@ -157,8 +150,7 @@ do
 
                                                 ROLLER="F"
                                         fi
-
-                                        I=$(($I+1))
+					I=$(($I+1))
 
                                 done
 
@@ -257,20 +249,16 @@ do
 				LOOP="4"
 			
 			fi
-			
-
 		done
 	
-	
-
 	elif [ $LOOP == "4" ] ; then
 
 		while [ $LOOP == "4" ]
 		do
 
 			#Tirar o parser de leitura do arquivo, mas, como vou saber que ele terminou de ler?
-			echo "123"
-	
+			PARSER=$()
+			
 		done
 
 	fi

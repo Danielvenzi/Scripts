@@ -1,0 +1,7 @@
+
+# Encryption
+tar -czf - * | openssl enc -e -k AvantData,, -aes256 -out secured.tar.gz
+
+# Decryption
+openssl enc -aes-256-cbc -k secret -d -in file.txt.enc -out file.txt
+openssl enc -k AvantData,, -d -aes256 -in $1 | tar xz -C /temp/latest/avantdata_latest

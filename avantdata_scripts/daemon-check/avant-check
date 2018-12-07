@@ -14,7 +14,7 @@ HELP="
 		      AvantNode.
 
 	USO	    - avant-check -s [NOME DO SERVIÇO]	      	
-			Ex: avant-check elasticsearch
+			Ex: avant-check -s elasticsearch
 	
 	AUTOR	    - Daniel Gomes, daniel@avantsec.com.br
 	

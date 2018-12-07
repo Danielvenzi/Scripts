@@ -1,0 +1,11 @@
+# Exporta a chave associada ao nome daniel
+gpg --export -a daniel
+
+# Lista as chaves que o gpg  gerencia
+gpg --list-keys
+
+# Descifra  o arquivo fileTest.gpg para o arquivo result.txt 
+gpg -o result.txt --no-tty fileTest.gpg
+
+# Cifra o arquivo
+gpg -e -r gomesvenzi@gmail.com fileTest

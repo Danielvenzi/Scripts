@@ -1,0 +1,28 @@
+#!/bin/bash
+
+ERR="
+	Wrong usage of command, use -h or --help for options
+"
+
+HELP="
+	DESCRIPTION	-	firewall-enable é um utilitário para re-construção do firewall a 
+				partir do restart do logstash.
+
+	USAGE		- 	firewall-enable [COLLECTOR_IP]
+
+	AUTHOR		-	Daniel Gomes, gomesvenzi@gmail.com
+"
+
+if [ -z $1 ] ; then
+
+	echo "$ERR"
+
+elif [ $1 == "-h" ] && [ $1 == "--help" ] ; then
+
+	echo "$HELP"
+
+elif [ $1 != "-h" ] || [ $1 != "--help" ] && [ -n $1 ] ; then
+
+	ssh root@$1 'iptables-restore < ./iptables_backup'
+
+

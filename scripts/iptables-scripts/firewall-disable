@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+ERR="
+	Wrong usage of command, -h or --help for more options.
+"
+
+HELP="
+	DESCRIPTION	-	firewall-disable é um utilitário feito para desativação do firewall
+				iptables quando o logstash do for desativado.
+
+	USAGE		-	firewall-disable [COLLECTOR_IP]
+
+	AUTHOR		-	Daniel Gomes, gomesvenzi@gmail.com
+"
+
+if [ -z $1 ] ; then
+
+	echo "$ERR"
+
+elif [ $1 == "-h" ] || [ $1 == "--help" ] ; then
+
+	echo "$HELP"
+
+elif [ $1 != "-h" ] || [ $1 != "--help"] && [ -n $1 ] ; then
+
+	ssh root@$1 'iptables-save > ./iptables_backup ; iptables -t filter -F ; iptables -t nat -F ; iptables-restore < ./iptables_disabled'
+
+fi

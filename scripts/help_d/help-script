@@ -1,0 +1,208 @@
+#!/bin/bash
+#--------------------------------------#                                       
+#Autor: Daniel Gomes Venzi Goncalves   |
+#email: gomesvenzi@gmail.com           |
+#--------------------------------------#
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
+purple=`tput setaf 125`
+yellow=`tput setaf 3`
+blue=`tput setaf 4`
+
+ERR0="
+     #--------------------------------------------------------------------------------#
+     |	${red}ERROR${reset}:                                                                        |
+     #--------------------------------------------------------------------------------#
+     |                                                                                |     
+     |	Wrong usage of command, please use -h or --help option for more information.  |
+     |                                                                                |
+     #--------------------------------------------------------------------------------#
+"
+
+HELP="
+     	${yellow}DESCRIPTION:${reset}  help - script - Provides a way to check on the status of services and system resources in a more user friendly way.                
+                                                                                                                                                                        
+     	${yellow}CONFIG:${reset}		dvanalysis works based on a configuration file: dvanalysis.conf, in wich you define the services and system resources that the script must have a look on.
+     			The definition of services and resources in the configuration file is really simple, only two variables for you to populate:                   				                                                                                                                                                
+     				services - The name of the services you want to analyse. Service names must be separated by commas. OBS: Check if the name you are inserting is the  actual service name.                                                                                                                          
+     				     Example:                                                                                                                           
+     						services=apache2,sshd,mysql-server                                                                                      
+
+     				resources - The system resources you want to analyse. Resources must be separated by commas.                                                             
+      					Example:                                                                                                                                         
+     						resources=RAM,DISK_USAGE                                                                                                  
+     	${yellow}USAGE:${reset} 		dvanalysis [OPTION] {ARGUMENT}	                                                                                        
+
+     	${yellow}OPTIONS:${reset} 	-s , make a analysis for a specific service, ignores the config file. OBS: {Argument} for this case will be the service name.                                    
+     		 	-r , makes a analysis for a specific resource, ignores the config file. OBS: {Argument} for this case will be the resource name.               
+			
+     		 	-lr , list the supported resources for analysis.                                                                                                
+
+     	${blue}AUTHOR:${reset} 	Daniel Gomes - gomesvenzi@gmail.com                                                                                                  
+
+     	${blue}PROPERTY:${reset} 	Mine
+"
+
+RESOURCES="
+     #----------------------------------------------------------------------------------#
+     |      ${purple}NAME  -  RESOURCE NAME (the one you should put in the config file)${reset}          |
+     #----------------------------------------------------------------------------------#
+     |                                                                                  |
+     |	     Volatile memory 	-	${yellow}RAM${reset}                                             |
+     |	     'Permanent' memory	-	${yellow}DISK_USAGE${reset}                                      |
+     |	                                                                                | 
+     #----------------------------------------------------------------------------------#
+" 
+
+
+
+if [ -z $1 ] ; then
+
+	echo "$ERR0"
+
+elif [ $1 == "-h" ] || [ $1 == "--help" ] ; then
+
+	echo "$HELP"
+	
+elif [ $1 != "-s" ] && [ $1 != "-r" ] && [ $1 != "-lr" ] ; then
+
+	echo "$ERR0"
+else
+
+	if [ $1 == "-s" ] ; then
+		
+		if [ -z $2 ] ; then
+			echo "$ERR0"
+		
+		else 
+			systemctl status $2 | grep "(running)" &> /dev/null
+
+			if [ $? -ne 0 ] ; then
+				clear ; echo "The service you're analyzing is ${red}not active or doesn't exist.${reset}"
+			else
+				STAT="Service $2 is ${green}active (running)${reset}"
+				PID=$(systemctl status $2 | grep "Main PID" | grep -Po '[0-9]{3,}')
+				N=$(netstat -tulpn | grep "$PID/" | wc -l)
+				
+				if [ $N -lt 2 ] ; then
+					PORT=$(netstat -tulpn | grep "$PID/" | grep -Po ':\K\d+')
+					#echo "$PORT"
+				else
+					netstat -tulpn | grep "$PID/" > port.info
+					PORT=$(python ./port.py)
+				fi
+
+				echo "
+	#----------------------------------------------#
+	|   ${purple}Service Query Result:${reset}                      |
+	#----------------------------------------------#
+	                                                                             
+	    Status: $STAT                                                
+            Service Main PID (process identifier): $PID                       
+	    Service Open Ports: $PORT
+				"
+			fi	
+			
+		fi
+
+	elif [ $1 == "-r" ] ; then
+		
+		if [ -z $2 ] ; then
+			echo "$ERR0"
+
+		elif [ $2 == "RAM" ] ; then
+			 #echo "RAM"	
+			 #M
+			 SWAP_ERR="0
+0
+0"
+			 #echo "$SWAP_ERR"
+			 free -h | grep "Mem:" | grep -Po '\K(\d{2,}G|\d{2,}M|\d.\dG|\d.\dM|\d{1}B|\d{1}G|\d{1}M)' > mem
+			 MEM_S=$(free -h | grep "Mem:" | grep -Po '\K(\d{2,}G|\d{2,}M|\d.\dG|\d.\dM|\d{1}B|\d{1}G|\d{1}M)' | wc -l)
+			 SWAP=$(free -h | grep "Swap:" | grep -Po '\K(\d{2,}|\d.\d|\d{1})')
+			 #echo "$SWAP"			
+ 
+			 if [ "$SWAP" != "$SWAP_ERR" ] ; then
+				
+				echo "
+     #--------------------------------------------------------------------------------#
+     |  ${red}WARNING${reset}:                                                                      |
+     #--------------------------------------------------------------------------------#
+     |                                                                                |
+     |  SWAP Partition is on, use swapoff command on the swap device                  |
+     |	and coment (#) the partition in /etc/fstab .                                  |
+     |                                                                                |
+     #--------------------------------------------------------------------------------#
+"			
+			 elif [ "$SWAP" == "$SWAP_ERR" ] ; then
+			
+				I=1
+			        while [ $I -le $MEM_S ] ;
+				do
+					line=$(sed -n ''$I'p' mem)
+					if [ $I -eq 1 ] ; then
+						total=$line	
+					elif [ $I -eq 2 ] ; then
+						used=$line
+					elif [ $I -eq 3 ] ; then
+						free=$line
+					elif [ $I -eq 4 ] ; then
+						shared=$line
+					elif [ $I -eq 5 ] ; then
+						buff=$line
+					elif [ $I -eq 6 ] ; then
+						available=$line
+					fi
+					#echo "$line"
+					#echo $I
+					I=$(($I+1))
+				done
+			
+				rm -f ./mem
+				#echo $total ; echo $used ; echo $free ; echo $shared ; echo $buff ; echo $available
+				
+				echo "
+     #--------------------------------------------------------------------------------#
+     |  ${yellow}MEMORY QUERY RESULTS${reset}:                                                         |
+     #--------------------------------------------------------------------------------#
+     |                                                                                |
+     |  ${blue}SWAP STATUS:${reset} ${red}OFF${reset}                                                              |
+     |  ${blue}RAM TOTAL:${reset} $total                                                               |
+     |  ${blue}RAM USED:${reset}  $used                                                                |
+     |                                                                                |
+     |  In case of used memory above 90% of total, ${red}inform${reset} the support team.           |
+     |                                                                                |
+     #--------------------------------------------------------------------------------#
+     
+"				
+
+			 fi			
+
+		elif [ $2 == "DISK_USAGE" ] ; then
+		
+			if [ -z $3 ] ; then
+	
+				#QNT=$(du -sh / 2> /dev/null | grep -Po '\K(\d{2,}G|\d{2,}M|\d.\dG|\d.\dM|\d{1}B|\d{1}G|\d{1}M)')
+				#echo $QNT
+				DISKS=$(python ./disk.py)
+				#echo "$DISKS"
+				
+				python ./disk.py
+					
+			elif [ -n $3 ] ; then
+				
+				#echo "Chegou aqui"	
+				echo "$ERR0"
+			fi  
+				
+		fi
+
+	elif [ $1 == "-lr" ] ; then
+		
+		echo "$RESOURCES"
+	fi
+
+fi
+
+

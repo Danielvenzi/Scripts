@@ -1,0 +1,62 @@
+#!/bin/bash
+
+HELP="
+	DESCRIPTION: avant-certs provides a way to quickly retrive the remote host ssh certificate.
+
+	USAGE: colcerts-script [OPTIONS] [IP]
+
+	OPTIONS:   -a , literal address. Example: avant-certs 10.20.30.1
+		   -p , ip prefix.	(plus)		-n , number of vm's in that prefix. 
+		   	
+		   	Example: avant-certs -p 10.20.30. -n 10
+				In the example above the script will iterate from 10.20.30.1 to 10.20.30.10 .
+
+	Made by: Daniel Gomes - gomesvenzi@gmail.com
+"
+
+ERR="Wrong usage of command, use -h or --help option for more information."
+
+I=1
+
+if [ -z $1 ] ; then
+	
+	echo "$ERR"
+
+elif [ $1 == "-h" ] || [ $1 == "--help" ] ; then
+
+	echo "$HELP"
+
+elif [ $1 == "-a" ] ; then
+
+	if [ -z $2 ] ; then
+	
+		echo "$ERR"
+
+	else
+		ssh root@$2 ssh-keygen 
+       		key=$(ssh root@$2 cat .ssh/id_rsa.pub) ; echo "$key" >> $HOME/.ssh/authorized_keys
+	fi
+
+
+elif [ $1 == "-p" ] ; then
+	
+	if [ -z $3 ] ; then
+		
+		echo "$ERR"
+
+	else
+		while [ $I -le $4 ]
+		do
+			
+			#echo "$2$I"
+			ssh root@$2$I ssh-keygen
+			key=$(ssh root@$2$I cat .ssh/id_rsa.pub) ; echo "$key" >> $HOME/.ssh/authorized_keys
+			I=$(($I+1))
+
+		done
+	fi
+
+else
+	echo "$ERR"
+
+fi
